@@ -1,0 +1,6 @@
+{
+  "name": "LiveTrack Pro - Real-Time GPS Tracking & Safety Platform",
+  "description": "Professional modern real-time GPS tracking, phone number locator, safe zone geofencing, journey history, and emergency SOS safety management system.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
