@@ -111,7 +111,7 @@ export default function MobileAppShell({
 }: MobileAppShellProps) {
   const [activeTab, setActiveTab] = useState<MobileTab>('home');
   const [selectedCountry, setSelectedCountry] = useState(COUNTRY_CODES[0]);
-  const [phoneNumberInput, setPhoneNumberInput] = useState('76 123 456');
+  const [phoneNumberInput, setPhoneNumberInput] = useState('078649553');
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [isSearchingPhone, setIsSearchingPhone] = useState(false);
   const [triangulationMessage, setTriangulationMessage] = useState<string | null>(null);
@@ -150,9 +150,10 @@ export default function MobileAppShell({
   // Handle phone number search & instant triangulation
   const handleTrackPhoneSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phoneNumberInput.trim()) return;
+    const raw = phoneNumberInput.trim();
+    if (!raw) return;
 
-    const fullNumber = `${selectedCountry.code} ${phoneNumberInput.trim()}`;
+    const fullNumber = raw.startsWith('+') || raw.startsWith('0') ? raw : `${selectedCountry.code} ${raw}`;
     setIsSearchingPhone(true);
     setTriangulationMessage(`Triangulating mobile tower & GPS satellites for ${fullNumber}...`);
     soundEffects.playBeep(700, 0.12);
@@ -436,7 +437,7 @@ export default function MobileAppShell({
               type="text"
               value={phoneNumberInput}
               onChange={(e) => setPhoneNumberInput(e.target.value)}
-              placeholder="76 123 456"
+              placeholder="078649553"
               className="h-8 flex-1 px-2.5 bg-slate-800/90 border border-slate-700 rounded-lg text-xs font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
             />
 

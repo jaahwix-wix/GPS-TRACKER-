@@ -14,7 +14,7 @@ import { soundEffects } from '@/lib/audio';
 
 export default function HomePage() {
   const [trackedUsers, setTrackedUsers] = useState<TrackedUser[]>(INITIAL_TRACKED_USERS);
-  const [currentUserId, setCurrentUserId] = useState<string>('user-mohamed-kamara');
+  const [currentUserId, setCurrentUserId] = useState<string>('user-078649553');
   const [geofences, setGeofences] = useState<GeofenceZone[]>(INITIAL_GEOFENCES);
   const [selectedGeofenceId, setSelectedGeofenceId] = useState<string | null>(null);
   const [history, setHistory] = useState(INITIAL_LOCATION_HISTORY);

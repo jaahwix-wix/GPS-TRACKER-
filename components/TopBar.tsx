@@ -33,7 +33,7 @@ export default function TopBar({
   onToggleMobileSidebar,
 }: TopBarProps) {
   const [selectedCountry, setSelectedCountry] = useState(COUNTRY_CODES[0]);
-  const [phoneNumber, setPhoneNumber] = useState('76 123 456');
+  const [phoneNumber, setPhoneNumber] = useState('078649553');
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -125,7 +125,7 @@ export default function TopBar({
                 type="text"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="76 123 456"
+                placeholder="078649553"
                 className="h-10 w-44 md:w-56 px-3 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 font-mono tracking-wider focus:outline-none focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:text-slate-400"
               />
             </div>

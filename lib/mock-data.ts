@@ -5,15 +5,15 @@ export const FREETOWN_CENTER: [number, number] = [8.4844, -13.2344];
 
 export const INITIAL_TRACKED_USERS: TrackedUser[] = [
   {
-    id: 'user-mohamed-kamara',
-    name: 'Mohamed Kamara',
-    phone: '+232 76 123 456',
+    id: 'user-078649553',
+    name: '078649553',
+    phone: '078649553',
     countryCode: '+232',
     avatar: '/avatars/avatar_mohamed_kamara_1791130244032.jpg',
-    role: 'Field Representative / Family Member',
+    role: 'Primary Tracked Target',
     isOnline: true,
     isTracking: true,
-    currentLocationName: 'Freetown, Sierra Leone',
+    currentLocationName: 'Lumley Beach / Aberdeen Sector, Freetown',
     coordinates: [8.4844, -13.2344],
     lastUpdated: '16 Sep 2025, 14:32',
     speedKmH: 12,
@@ -83,7 +83,7 @@ export const INITIAL_GEOFENCES: GeofenceZone[] = [
     lastEvent: {
       type: 'exit',
       timestamp: 'Today at 08:15',
-      userName: 'Mohamed Kamara',
+      userName: '078649553',
     },
   },
   {
@@ -99,7 +99,7 @@ export const INITIAL_GEOFENCES: GeofenceZone[] = [
     lastEvent: {
       type: 'entry',
       timestamp: 'Today at 14:10',
-      userName: 'Mohamed Kamara',
+      userName: '078649553',
     },
   },
   {
@@ -204,7 +204,7 @@ export const INITIAL_NOTIFICATIONS: SystemNotification[] = [
   {
     id: 'notif-1',
     title: 'Safe Zone Entry',
-    message: 'Mohamed Kamara entered Office (Central Freetown)',
+    message: '078649553 entered Office (Central Freetown)',
     time: '14:10',
     type: 'safe_zone',
     isRead: false,
@@ -212,7 +212,7 @@ export const INITIAL_NOTIFICATIONS: SystemNotification[] = [
   {
     id: 'notif-2',
     title: 'Safe Zone Exit',
-    message: 'Mohamed Kamara departed Home zone (Lumley)',
+    message: '078649553 departed Home zone (Lumley)',
     time: '08:15',
     type: 'safe_zone',
     isRead: false,
