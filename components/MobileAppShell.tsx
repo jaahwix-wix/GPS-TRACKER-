@@ -37,8 +37,10 @@ import {
   Navigation2,
   Info,
   Compass,
+  Sparkles,
 } from 'lucide-react';
 import MapViewport from '@/components/MapViewport';
+import LocationIntelModal from '@/components/LocationIntelModal';
 import {
   TrackedUser,
   GeofenceZone,
@@ -124,6 +126,9 @@ export default function MobileAppShell({
   const [isSearchingAddress, setIsSearchingAddress] = useState(false);
   const [searchResults, setSearchResults] = useState<Array<{ place_id: number; display_name: string; lat: string; lon: string }>>([]);
 
+  // Google Maps & Google Search Live Grounding Modal (gemini-2.5-flash)
+  const [isIntelModalOpen, setIsIntelModalOpen] = useState(false);
+
   // Accuracy Guide Modal
   const [isAccuracyGuideOpen, setIsAccuracyGuideOpen] = useState(false);
 
@@ -160,8 +165,11 @@ export default function MobileAppShell({
 
     setTimeout(() => {
       onAddNewPhone(fullNumber);
+      if (onLocateCurrentDevice) {
+        onLocateCurrentDevice();
+      }
       setIsSearchingPhone(false);
-      setTriangulationMessage(`Signal locked: ${fullNumber} (GPS accuracy ${currentUser.gpsAccuracyMeters}m)`);
+      setTriangulationMessage(`Live Signal Locked: ${fullNumber} (Current device location synchronized)`);
       soundEffects.playBeep(900, 0.18);
 
       setTimeout(() => {
@@ -336,7 +344,7 @@ export default function MobileAppShell({
 
         {/* Mobile Top Status Bar */}
         <div className="pt-2 px-6 pb-1 flex justify-between items-center text-[11px] font-mono text-slate-300 font-semibold bg-slate-950/60 backdrop-blur-xs z-30 shrink-0">
-          <span>{systemTime.split(',')[1]?.trim().slice(0, 5) || '14:32'}</span>
+          <span suppressHydrationWarning>{systemTime.split(',')[1]?.trim().slice(0, 5) || '14:32'}</span>
           <div className="flex items-center gap-2">
             <span className="text-[10px] tracking-tight text-emerald-400 font-sans font-bold">● 5G</span>
             <div className="flex items-center gap-1">
@@ -396,7 +404,7 @@ export default function MobileAppShell({
           </div>
 
           {/* Quick Mobile Number Search & Direct Triangulation Input */}
-          <form onSubmit={handleTrackPhoneSubmit} className="flex items-center gap-1.5">
+          <form suppressHydrationWarning onSubmit={handleTrackPhoneSubmit} className="flex items-center gap-1.5">
             {/* Country flag selector */}
             <div className="relative">
               <button
@@ -434,6 +442,7 @@ export default function MobileAppShell({
 
             {/* Mobile number input */}
             <input
+              suppressHydrationWarning
               type="text"
               value={phoneNumberInput}
               onChange={(e) => setPhoneNumberInput(e.target.value)}
@@ -476,6 +485,17 @@ export default function MobileAppShell({
             >
               <Search className="w-3 h-3 text-blue-400" />
               <span>Search Real Address/City</span>
+            </button>
+
+            {/* Google Maps & Google Search Live Grounding (gemini-2.5-flash) */}
+            <button
+              type="button"
+              onClick={() => setIsIntelModalOpen(true)}
+              className="px-2.5 py-1 bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/50 text-indigo-300 rounded-lg font-bold flex items-center gap-1.5 shrink-0 transition-colors shadow-2xs cursor-pointer"
+              title="Google Maps & Google Search Live Grounding (gemini-2.5-flash)"
+            >
+              <Sparkles className="w-3 h-3 text-indigo-400 animate-pulse" />
+              <span>Google Maps &amp; Search Intel</span>
             </button>
           </div>
 
@@ -524,7 +544,11 @@ export default function MobileAppShell({
           >
               {/* Detailed Area & Location Bar matching user request */}
               <div className="px-3.5 py-2 bg-[#081325] border-b border-slate-800 flex items-center justify-between z-20 shrink-0">
-                <div className="flex items-center gap-2 min-w-0">
+                <div
+                  onClick={onLocateCurrentDevice}
+                  className="flex items-center gap-2 min-w-0 cursor-pointer hover:opacity-90 transition-opacity"
+                  title="Click to refresh exact current GPS location"
+                >
                   <div className="w-7 h-7 rounded-lg bg-blue-600/30 text-blue-400 flex items-center justify-center shrink-0 border border-blue-500/40">
                     <MapPin className="w-4 h-4 fill-current" />
                   </div>
@@ -534,7 +558,8 @@ export default function MobileAppShell({
                         Current Area
                       </span>
                       <span className="text-[10px] text-slate-400">·</span>
-                      <span className="text-[10px] text-emerald-400 font-semibold font-mono">
+                      <span className="text-[10px] text-emerald-400 font-semibold font-mono flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         GPS {currentUser.gpsAccuracyMeters}m
                       </span>
                     </div>
@@ -548,6 +573,29 @@ export default function MobileAppShell({
                 </div>
 
                 <div className="flex items-center gap-1.5 shrink-0">
+                  {/* Live GPS Sync Button */}
+                  {onLocateCurrentDevice && (
+                    <button
+                      onClick={onLocateCurrentDevice}
+                      className="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[10px] font-bold flex items-center gap-1 shadow-md shadow-emerald-600/30 transition-colors cursor-pointer"
+                      title="Sync exact current live GPS location"
+                    >
+                      <Navigation2 className="w-3 h-3 fill-current animate-pulse" />
+                      <span>Live GPS</span>
+                    </button>
+                  )}
+
+                  {/* Location Intelligence (Google Maps & Google Search via gemini-2.5-flash) */}
+                  <button
+                    type="button"
+                    onClick={() => setIsIntelModalOpen(true)}
+                    className="px-2 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[10px] font-bold flex items-center gap-1 shadow-md shadow-indigo-600/30 transition-colors cursor-pointer"
+                    title="Live Area Intel powered by Google Maps & Google Search (gemini-2.5-flash)"
+                  >
+                    <Sparkles className="w-3 h-3 text-indigo-200 animate-pulse" />
+                    <span>Area Intel</span>
+                  </button>
+
                   {/* Transit Motion Simulation button */}
                   <button
                     onClick={onToggleSimulatingTransit}
@@ -556,7 +604,7 @@ export default function MobileAppShell({
                         ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-400'
                         : 'bg-slate-800 border-slate-700 text-slate-400'
                     }`}
-                    title="Simulate live GPS car movement along Freetown roads"
+                    title="Simulate live GPS car movement along Bo urban roads"
                   >
                     {isSimulatingLiveTransit ? (
                       <>
@@ -596,6 +644,7 @@ export default function MobileAppShell({
                   showHistoryPath={false}
                   selectedGeofenceId={selectedGeofenceId}
                   onSelectGeofence={onSelectGeofence}
+                  onLocateCurrentDevice={onLocateCurrentDevice}
                   isTrackingActive={isTrackingActive}
                   isExpanded={isMapExpanded}
                   onToggleExpand={() => setIsMapExpanded(!isMapExpanded)}
@@ -1019,13 +1068,14 @@ export default function MobileAppShell({
                       <X className="w-4 h-4" />
                     </button>
                   </div>
-                  <form onSubmit={handleCreateZoneSubmit} className="space-y-3">
+                  <form suppressHydrationWarning onSubmit={handleCreateZoneSubmit} className="space-y-3">
                     <div>
                       <label className="text-[11px] text-slate-400 block mb-1">Zone Name</label>
                       <input
+                        suppressHydrationWarning
                         type="text"
                         required
-                        placeholder="e.g. Lumley Beach Residence"
+                        placeholder="e.g. Bo Clock Tower Residence"
                         value={newZoneName}
                         onChange={(e) => setNewZoneName(e.target.value)}
                         className="w-full px-2.5 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-xs text-white"
@@ -1037,6 +1087,7 @@ export default function MobileAppShell({
                         <span className="font-mono text-blue-400 font-bold">{newZoneRadius}m</span>
                       </div>
                       <input
+                        suppressHydrationWarning
                         type="range"
                         min="100"
                         max="1500"
@@ -1178,14 +1229,14 @@ export default function MobileAppShell({
                 </button>
               </div>
 
-              <form onSubmit={handleAddressSearchSubmit} className="flex items-center gap-1.5">
+              <form suppressHydrationWarning onSubmit={handleAddressSearchSubmit} className="flex items-center gap-1.5">
                 <input
+                  suppressHydrationWarning
                   type="text"
-                  placeholder="e.g. Lumley Beach, Freetown or London..."
+                  placeholder="e.g. Bo Clock Tower, Tikonko Rd, Bo School..."
                   value={addressQuery}
                   onChange={(e) => setAddressQuery(e.target.value)}
                   className="flex-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
-                  autoFocus
                 />
                 <button
                   type="submit"
@@ -1268,6 +1319,13 @@ export default function MobileAppShell({
             </div>
           </div>
         )}
+
+        {/* Location Intelligence Modal (Google Maps & Google Search via gemini-2.5-flash) */}
+        <LocationIntelModal
+          isOpen={isIntelModalOpen}
+          onClose={() => setIsIntelModalOpen(false)}
+          currentUser={currentUser}
+        />
 
         {/* Mobile Bottom Navigation Bar matching MVP */}
         <nav className="h-16 bg-slate-950 border-t border-slate-800 flex items-center justify-around px-2 z-30 shrink-0">

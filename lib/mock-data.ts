@@ -1,7 +1,8 @@
 import { TrackedUser, HistoryRoute, GeofenceZone, EmergencyContact, SystemNotification } from './types';
 
-// Coordinates around Freetown, Sierra Leone matching the MVP map
-export const FREETOWN_CENTER: [number, number] = [8.4844, -13.2344];
+// Accurate coordinates for Bo, Southern Province, Sierra Leone
+export const BO_CENTER: [number, number] = [7.95997, -11.73964];
+export const FREETOWN_CENTER: [number, number] = [7.95997, -11.73964];
 
 export const INITIAL_TRACKED_USERS: TrackedUser[] = [
   {
@@ -13,17 +14,17 @@ export const INITIAL_TRACKED_USERS: TrackedUser[] = [
     role: 'Primary Tracked Target',
     isOnline: true,
     isTracking: true,
-    currentLocationName: 'Lumley Beach / Aberdeen Sector, Freetown',
-    coordinates: [8.4844, -13.2344],
+    currentLocationName: 'Bo Clock Tower, Tikonko Rd, Bo, Southern Province',
+    coordinates: [7.95997, -11.73964],
     lastUpdated: '16 Sep 2025, 14:32',
     speedKmH: 12,
     direction: 'North East',
     headingDegrees: 45,
-    batteryLevel: 68,
+    batteryLevel: 78,
     isCharging: false,
-    gpsAccuracyMeters: 8,
+    gpsAccuracyMeters: 4,
     deviceModel: 'Samsung Galaxy A54 5G',
-    networkType: '4G LTE / Orange SL',
+    networkType: '4G LTE / Orange SL (Bo City Tower)',
   },
   {
     id: 'user-fatmata-conteh',
@@ -34,8 +35,8 @@ export const INITIAL_TRACKED_USERS: TrackedUser[] = [
     role: 'Senior Supervisor',
     isOnline: true,
     isTracking: true,
-    currentLocationName: 'Wilberforce Barracks, Freetown',
-    coordinates: [8.4682, -13.2489],
+    currentLocationName: 'Bo School Campus, Hangha Town, Bo',
+    coordinates: [7.96215, -11.74276],
     lastUpdated: '16 Sep 2025, 14:30',
     speedKmH: 0,
     direction: 'Stationary',
@@ -55,15 +56,15 @@ export const INITIAL_TRACKED_USERS: TrackedUser[] = [
     role: 'Logistics Fleet Driver',
     isOnline: false,
     isTracking: false,
-    currentLocationName: 'Kissy Terminal, Freetown',
-    coordinates: [8.4721, -13.1952],
+    currentLocationName: 'Torwama Rd Junction, Bo',
+    coordinates: [7.9520, -11.7445],
     lastUpdated: '16 Sep 2025, 13:15',
     speedKmH: 0,
     direction: 'West',
     headingDegrees: 270,
     batteryLevel: 19,
     isCharging: false,
-    gpsAccuracyMeters: 14,
+    gpsAccuracyMeters: 12,
     deviceModel: 'Xiaomi Redmi Note 12',
     networkType: '3G / QCell SL',
   },
@@ -71,31 +72,15 @@ export const INITIAL_TRACKED_USERS: TrackedUser[] = [
 
 export const INITIAL_GEOFENCES: GeofenceZone[] = [
   {
-    id: 'geo-home',
-    name: 'Home',
-    radiusMeters: 500,
-    centerCoordinates: [8.4891, -13.2721], // Near Lumley
+    id: 'geo-bo-center',
+    name: 'Bo Clock Tower Hub',
+    radiusMeters: 400,
+    centerCoordinates: [7.95997, -11.73964], // Bo Clock Tower
     color: '#16a34a', // Emerald green
     iconName: 'home',
     isActive: true,
     alertOnEntry: true,
     alertOnExit: true,
-    lastEvent: {
-      type: 'exit',
-      timestamp: 'Today at 08:15',
-      userName: '078649553',
-    },
-  },
-  {
-    id: 'geo-office',
-    name: 'Office',
-    radiusMeters: 300,
-    centerCoordinates: [8.4844, -13.2344], // Central Freetown
-    color: '#2563eb', // Blue
-    iconName: 'briefcase',
-    isActive: true,
-    alertOnEntry: true,
-    alertOnExit: false,
     lastEvent: {
       type: 'entry',
       timestamp: 'Today at 14:10',
@@ -103,21 +88,37 @@ export const INITIAL_GEOFENCES: GeofenceZone[] = [
     },
   },
   {
-    id: 'geo-school',
-    name: 'School',
-    radiusMeters: 200,
-    centerCoordinates: [8.4715, -13.2558], // Hill Station / Wilberforce
-    color: '#9333ea', // Purple
+    id: 'geo-bo-school',
+    name: 'Bo School Zone',
+    radiusMeters: 350,
+    centerCoordinates: [7.96215, -11.74276], // Bo Government Secondary School
+    color: '#2563eb', // Blue
     iconName: 'graduation-cap',
+    isActive: true,
+    alertOnEntry: true,
+    alertOnExit: false,
+    lastEvent: {
+      type: 'exit',
+      timestamp: 'Today at 08:15',
+      userName: '078649553',
+    },
+  },
+  {
+    id: 'geo-bo-hospital',
+    name: 'Bo Govt Hospital',
+    radiusMeters: 250,
+    centerCoordinates: [7.9645, -11.7380], // Bo Hospital
+    color: '#9333ea', // Purple
+    iconName: 'briefcase',
     isActive: false,
     alertOnEntry: true,
     alertOnExit: true,
   },
   {
-    id: 'geo-warehouse',
-    name: 'Warehouse',
+    id: 'geo-bo-commercial',
+    name: 'Tikonko Rd Commercial',
     radiusMeters: 400,
-    centerCoordinates: [8.4610, -13.2185], // Cline Town / Industrial
+    centerCoordinates: [7.9542, -11.7410], // Tikonko Rd
     color: '#ea580c', // Orange
     iconName: 'warehouse',
     isActive: true,
@@ -128,52 +129,52 @@ export const INITIAL_GEOFENCES: GeofenceZone[] = [
 
 export const INITIAL_LOCATION_HISTORY: HistoryRoute = {
   date: '16 Sep 2025',
-  totalDistanceKm: 18.6,
-  durationFormatted: '6h 29m',
-  avgSpeedKmH: 8,
+  totalDistanceKm: 14.2,
+  durationFormatted: '5h 18m',
+  avgSpeedKmH: 11,
   waypoints: [
     {
       id: 'wp-1',
       time: '14:32',
-      name: 'Freetown, Sierra Leone',
-      coordinates: [8.4844, -13.2344],
+      name: 'Bo Clock Tower, Tikonko Rd, Bo',
+      coordinates: [7.95997, -11.73964],
       speedKmH: 12,
       isLive: true,
     },
     {
       id: 'wp-2',
       time: '13:58',
-      name: 'Wilberforce, Freetown',
-      coordinates: [8.4682, -13.2489],
-      speedKmH: 8,
+      name: 'Fenton Rd / Bo Central Market',
+      coordinates: [7.96120, -11.73810],
+      speedKmH: 10,
     },
     {
       id: 'wp-3',
       time: '12:41',
-      name: 'Lumley Beach, Freetown',
-      coordinates: [8.4891, -13.2721],
-      speedKmH: 15,
+      name: 'Dambala Rd Junction, Bo',
+      coordinates: [7.96280, -11.73600],
+      speedKmH: 14,
     },
     {
       id: 'wp-4',
       time: '11:26',
-      name: 'Aberdeen, Freetown',
-      coordinates: [8.4978, -13.2842],
+      name: 'Bo Govt Hospital, Hospital Rd',
+      coordinates: [7.96450, -11.73800],
       speedKmH: 0,
     },
     {
       id: 'wp-5',
       time: '09:12',
-      name: 'Congo Cross, Freetown',
-      coordinates: [8.4812, -13.2519],
-      speedKmH: 6,
+      name: 'Bo School Campus, Hangha Town',
+      coordinates: [7.96215, -11.74276],
+      speedKmH: 8,
     },
     {
       id: 'wp-6',
       time: '08:03',
-      name: 'Youyi Building, Freetown',
-      coordinates: [8.4795, -13.2371],
-      speedKmH: 4,
+      name: 'Torwama Rd Junction, Bo',
+      coordinates: [7.95200, -11.74450],
+      speedKmH: 16,
     },
   ],
 };
@@ -204,7 +205,7 @@ export const INITIAL_NOTIFICATIONS: SystemNotification[] = [
   {
     id: 'notif-1',
     title: 'Safe Zone Entry',
-    message: '078649553 entered Office (Central Freetown)',
+    message: '078649553 entered Bo Clock Tower Hub (Bo City)',
     time: '14:10',
     type: 'safe_zone',
     isRead: false,
@@ -212,7 +213,7 @@ export const INITIAL_NOTIFICATIONS: SystemNotification[] = [
   {
     id: 'notif-2',
     title: 'Safe Zone Exit',
-    message: '078649553 departed Home zone (Lumley)',
+    message: '078649553 departed Bo School Zone (Hangha Town)',
     time: '08:15',
     type: 'safe_zone',
     isRead: false,
@@ -220,7 +221,7 @@ export const INITIAL_NOTIFICATIONS: SystemNotification[] = [
   {
     id: 'notif-3',
     title: 'GPS Signal Strong',
-    message: 'High accuracy tracking lock achieved (8 meters precision)',
+    message: 'High accuracy GPS lock: Bo, Southern Province, Sierra Leone (4m precision)',
     time: '08:03',
     type: 'info',
     isRead: true,

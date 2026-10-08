@@ -70,7 +70,7 @@ export default function TopBar({
           </svg>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col">
+        <form suppressHydrationWarning onSubmit={handleSubmit} className="flex flex-col">
           <div className="flex items-center gap-2 mb-1">
             <h2 className="text-sm font-bold text-slate-900 tracking-tight">
               Track by Phone Number
@@ -122,6 +122,7 @@ export default function TopBar({
             {/* Phone Input */}
             <div className="relative">
               <input
+                suppressHydrationWarning
                 type="text"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
@@ -153,7 +154,7 @@ export default function TopBar({
             </span>
             <span className="text-xs font-bold text-slate-800 tracking-tight">System Online</span>
           </div>
-          <span className="text-[11px] text-slate-500 font-mono">
+          <span suppressHydrationWarning className="text-[11px] text-slate-500 font-mono">
             Last updated: {systemTime}
           </span>
         </div>

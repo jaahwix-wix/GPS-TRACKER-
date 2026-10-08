@@ -42,26 +42,70 @@ export default function HomePage() {
     return () => clearInterval(timer);
   }, []);
 
-  // Movement Simulation Engine (smooth real-time tracking along coastal routes)
+  // Automatically acquire physical device real location on initial app launch
+  useEffect(() => {
+    if (typeof window === 'undefined' || !navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const accuracy = Math.round(pos.coords.accuracy) || 4;
+
+        let addressName = `${lat.toFixed(4)}°, ${lng.toFixed(4)}°`;
+        try {
+          const res = await fetch(`/api/reverse-geocode?lat=${lat}&lon=${lng}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.display_name) {
+              const parts = data.display_name.split(', ');
+              addressName = parts.slice(0, 3).join(', ');
+            }
+          }
+        } catch {
+          // fallback
+        }
+
+        setIsSimulatingLiveTransit(false); // Stop simulation so real GPS stays locked
+        setTrackedUsers((prev) =>
+          prev.map((u) => {
+            if (u.id === currentUserId) {
+              return {
+                ...u,
+                coordinates: [lat, lng],
+                currentLocationName: addressName,
+                gpsAccuracyMeters: accuracy,
+                lastUpdated: 'Live Real-Time GPS Lock',
+              };
+            }
+            return u;
+          })
+        );
+      },
+      (err) => {
+        console.log('Auto-GPS notice:', err.message);
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+    );
+  }, [currentUserId]);
+
+  // Movement Simulation Engine (smooth real-time tracking along Bo urban routes)
   useEffect(() => {
     if (!isTrackingActive || !isSimulatingLiveTransit) return;
 
     let step = 0;
     const transitWaypoints: [number, number][] = [
-      [8.4844, -13.2344],
-      [8.4848, -13.2356],
-      [8.4852, -13.2372],
-      [8.4859, -13.2395],
-      [8.4866, -13.2421],
-      [8.4875, -13.2456],
-      [8.4884, -13.2512],
-      [8.4891, -13.2568],
-      [8.4878, -13.2624],
-      [8.4862, -13.2679],
-      [8.4850, -13.2721],
-      [8.4844, -13.2344],
+      [7.95997, -11.73964], // Bo Clock Tower (Tikonko Rd)
+      [7.96080, -11.73860], // Fenton Rd Commercial
+      [7.96180, -11.73720], // Bo Central Market
+      [7.96280, -11.73600], // Dambala Rd Junction
+      [7.96450, -11.73800], // Bo Govt Hospital / Hospital Rd
+      [7.96320, -11.74100], // Sewa Road
+      [7.96215, -11.74276], // Bo Government Secondary School (Hangha Town)
+      [7.96080, -11.74120], // Bo Post Office / Coronation Rd
+      [7.95997, -11.73964], // Bo Clock Tower
     ];
-
+  // location must be accurate and dynamic
     const interval = setInterval(() => {
       step = (step + 1) % transitWaypoints.length;
       const nextCoords = transitWaypoints[step];
@@ -70,7 +114,7 @@ export default function HomePage() {
         prev.map((user) => {
           if (user.id === currentUserId) {
             const simulatedSpeed = Math.floor(10 + Math.random() * 18);
-            const heading = (step * 30 + 45) % 360;
+            const heading = (step * 40 + 35) % 360;
             return {
               ...user,
               coordinates: nextCoords,
@@ -118,17 +162,17 @@ export default function HomePage() {
       role: 'Tracked Mobile Device',
       isOnline: true,
       isTracking: true,
-      currentLocationName: 'Lumley Beach / Aberdeen, Freetown',
+      currentLocationName: 'Bo Clock Tower, Tikonko Rd, Bo, Southern Province',
       coordinates: [
-        8.4844 + (Math.random() - 0.5) * 0.012,
-        -13.2344 + (Math.random() - 0.5) * 0.012,
+        7.95997 + (Math.random() - 0.5) * 0.005,
+        -11.73964 + (Math.random() - 0.5) * 0.005,
       ],
       lastUpdated: 'Live Signal Lock (Just now)',
       speedKmH: 12,
       direction: 'North East',
       headingDegrees: 48,
       batteryLevel: 88,
-      gpsAccuracyMeters: 6,
+      gpsAccuracyMeters: 4,
     };
 
     setTrackedUsers((prev) => [newUser, ...prev]);
@@ -172,6 +216,8 @@ export default function HomePage() {
           // fallback to coordinates
         }
 
+        setIsSimulatingLiveTransit(false); // Disable simulation so real GPS stays active
+
         setTrackedUsers((prev) =>
           prev.map((u) => {
             if (u.id === currentUserId) {
@@ -200,6 +246,7 @@ export default function HomePage() {
 
   // Set custom real-world coordinates and address
   const handleSetCustomLocation = (coords: [number, number], locationName: string) => {
+    setIsSimulatingLiveTransit(false);
     setTrackedUsers((prev) =>
       prev.map((u) => {
         if (u.id === currentUserId) {

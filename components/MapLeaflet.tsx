@@ -13,6 +13,7 @@ interface MapLeafletProps {
   selectedGeofenceId?: string | null;
   onSelectGeofence?: (id: string) => void;
   onMapClickCoordinates?: (coords: [number, number]) => void;
+  onLocateCurrentDevice?: () => void;
   isTrackingActive: boolean;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
@@ -34,12 +35,15 @@ const TILE_CONFIGS = {
   },
 };
 
-// Recognizable local landmarks around Freetown to help user identify the exact area
+// Recognizable local landmarks around Sierra Leone (Bo & Freetown)
 const AREA_LANDMARKS = [
+  { name: 'Bo Clock Tower', coords: [7.95997, -11.73964] as [number, number], icon: '🕰️' },
+  { name: 'Bo School Campus', coords: [7.96215, -11.74276] as [number, number], icon: '🏫' },
+  { name: 'Bo Central Market', coords: [7.9618, -11.7372] as [number, number], icon: '🏬' },
+  { name: 'Bo Govt Hospital', coords: [7.9645, -11.7380] as [number, number], icon: '🏥' },
+  { name: 'Njala Bo Campus', coords: [7.9520, -11.7445] as [number, number], icon: '🎓' },
   { name: 'Lumley Beach', coords: [8.4891, -13.2721] as [number, number], icon: '🏖️' },
-  { name: 'Aberdeen Bridge', coords: [8.4978, -13.2842] as [number, number], icon: '🌉' },
-  { name: 'Wilberforce', coords: [8.4682, -13.2489] as [number, number], icon: '⛰️' },
-  { name: 'State House / Central', coords: [8.4877, -13.2356] as [number, number], icon: '🏛️' },
+  { name: 'State House / Freetown', coords: [8.4877, -13.2356] as [number, number], icon: '🏛️' },
 ];
 
 export default function MapLeaflet({
@@ -50,6 +54,7 @@ export default function MapLeaflet({
   selectedGeofenceId,
   onSelectGeofence,
   onMapClickCoordinates,
+  onLocateCurrentDevice,
   isTrackingActive,
   isExpanded = false,
   onToggleExpand,
@@ -382,7 +387,10 @@ export default function MapLeaflet({
   };
 
   const handleCenterOnUser = () => {
-    mapInstanceRef.current?.flyTo(currentUser.coordinates, 15, {
+    if (onLocateCurrentDevice) {
+      onLocateCurrentDevice();
+    }
+    mapInstanceRef.current?.flyTo(currentUser.coordinates, 16, {
       duration: 1.2,
     });
   };
@@ -411,7 +419,7 @@ export default function MapLeaflet({
                 Current Area Lock
               </span>
               <span className="text-xs font-extrabold text-white truncate block">
-                Lumley Beach / Aberdeen, Freetown
+                {currentUser.currentLocationName}
               </span>
             </div>
           </div>
